@@ -12,10 +12,16 @@
 
 @Statement: 本脚本仅供学习与研究使用，严禁用于商业用途（For educational and non-commercial use only）。
 """
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-engine = create_engine('sqlite:///mydata.db', echo=False)
-Session = sessionmaker(bind=engine)
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+db_path = os.path.join(base_dir, 'mydata.db')
+
+engine = create_engine(f'sqlite:////{db_path}', echo=False, future=True)
+Session = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 session = Session()
+
 Base = declarative_base()
+Base.query = Session().query_property()
