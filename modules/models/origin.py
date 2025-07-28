@@ -23,4 +23,4 @@ class Origin(Base, TimestampMixin, CRUDMixin):
     timestamp = Column(Integer)
     origin = Column(Text)
     page = Column(Text)
-    record = Column(Integer, CheckConstraint('is_active in (0,1)'), nullable=False, default=0)
+    record = Column(Integer, CheckConstraint('record in (0,1)'), nullable=False, default=0)

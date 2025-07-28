@@ -12,14 +12,15 @@
 
 @Statement: 本脚本仅供学习与研究使用，严禁用于商业用途（For educational and non-commercial use only）。
 """
-from .base import session
+from modules.base import Session
+from datetime import datetime
 from sqlalchemy.sql import func
 from sqlalchemy import Column, DateTime
-
+session = Session()
 
 class TimestampMixin(object):
-    created_at = Column(DateTime, default=func.now)
-    updated_at = Column(DateTime, default=func.now, onupdate=func.now)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
 
 class CRUDMixin(object):
@@ -35,7 +36,7 @@ class CRUDMixin(object):
     @classmethod
     def create(cls, **kwargs):
         obj = cls(**kwargs)
-        return obj.save
+        return obj.save()
 
     @classmethod
     def get(cls, pk):
@@ -48,9 +49,3 @@ class CRUDMixin(object):
     @classmethod
     def all(cls):
         return cls.query.all()
-
-
-class AuthCommitMixin(object):
-    def save(self):
-        session.add(self)
-        session.commit()

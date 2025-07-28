@@ -14,9 +14,9 @@
 """
 from modules.base import Base, engine
 
-from .video import Video
-from .origin import Origin
-from .user import User
-from .comment import Comment
+from modules.models.video import Video
+from modules.models.origin import Origin
+from modules.models.user import User
+from modules.models.comment import Comment
 
 Base.metadata.create_all(engine)

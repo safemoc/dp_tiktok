@@ -12,7 +12,7 @@
 
 @Statement: 本脚本仅供学习与研究使用，严禁用于商业用途（For educational and non-commercial use only）。
 """
-from sqlalchemy import Column, Integer, Text, String
+from sqlalchemy import Column, Integer, Text
 from modules.base import Base
 from modules.mixins import TimestampMixin, CRUDMixin
 
