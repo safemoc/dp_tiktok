@@ -20,10 +20,10 @@ from modules.mixins import TimestampMixin, CRUDMixin
 class User(Base, TimestampMixin, CRUDMixin):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    tiktok_user_id = Column(Text)
-    account = Column(Text)
-    followers = Column(Integer)
-    following = Column(Integer)
-    liked_num = Column(Integer)
-    collect_num = Column(Integer)
-    url = Column(String)
+    account = Column(String(255), comment='账号')
+    # tiktok_user_id = Column(Text)
+    # account = Column(Text)
+    self_url = Column(String(500), comment='个人主页链接')
+    followers = Column(Integer, comment='粉丝数')
+    following = Column(Integer, comment='关注数')
+    name = Column(String(300), comment='用户名')

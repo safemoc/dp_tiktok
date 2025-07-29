@@ -15,8 +15,8 @@
 from modules.base import Base, engine
 
 from modules.models.video import Video
-from modules.models.origin import Origin
 from modules.models.user import User
 from modules.models.comment import Comment
+from modules.models.task import Task
 
 Base.metadata.create_all(engine)

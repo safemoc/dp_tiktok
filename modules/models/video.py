@@ -18,14 +18,15 @@ from modules.mixins import TimestampMixin, CRUDMixin
 
 
 class Video(Base, TimestampMixin, CRUDMixin):
-    __tablename__ = 'video_list'
+    __tablename__ = 'video'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    tiktok_video_id = Column(Text)
-    duration = Column(Integer)
-    link = Column(Text)
-    from_page = Column(Integer)
-    user_id = Column(Text)
-    like_nums = Column(Integer)
-    discuss_nums = Column(Integer)
-    collect_nums = Column(Integer)
-    forward_nums = Column(Integer)
+    video_id = Column(Text,comment='平台视频唯一id')
+    user_id = Column(Integer,comment= '用户id')
+    link = Column(Text,comment='视频链接')
+    like_nums = Column(Integer,comment= '点赞数')
+    collect_num= Column(Integer,comment = '收藏数')
+    repost_num = Column(Integer,comment = '转发数')
+    comment_num = Column(Integer,comment='评论数')
+    # discuss_nums = Column(Integer)
+    # collect_nums = Column(Integer)
+    # forward_nums = Column(Integer)

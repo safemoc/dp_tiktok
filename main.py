@@ -13,11 +13,19 @@
 @Statement: 本脚本仅供学习与研究使用，严禁用于商业用途（For educational and non-commercial use only）。
 """
 from automation.harvester import Spider
+from scheduler import scheduler
+
+@scheduler('day','11:33:00')
+def hahahahha ():
+    ...
+
+
 
 if __name__ == '__main__':
-    s = Spider()
-    s.open_browser('%E4%B9%90%E9%99%B5%E5%BD%B1%E8%A7%86%E5%9F%8E')
-    s.filtration()
-    s.turn_page()
-    s.downloader_item()
+    # s = Spider()
+    # s.open_browser('%E4%B9%90%E9%99%B5%E5%BD%B1%E8%A7%86%E5%9F%8E')
+    # s.filtration()
+    # s.turn_page()
+    # s.downloader_item()
+    hahahahha()
     ...

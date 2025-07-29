@@ -21,6 +21,8 @@ class Comment(Base, TimestampMixin, CRUDMixin):
     __tablename__ = 'comments'
     id = Column(Integer, primary_key=True, autoincrement=True)
     video_id = Column(Integer)
-    user_id = Column(Integer)
     content = Column(Text)
+    user_id = Column(Integer)
+    liked = Column(Integer)
+    fid = Column(Integer)
     timestamp = Column(Integer)
