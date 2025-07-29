@@ -15,11 +15,20 @@
 import time
 from lxml import etree
 from DrissionPage import Chromium
-from modules.models.origin import Origin
+from scheduler import scheduler
+
+
+
+
 
 class Spider(object):
-    def __init__(self):
+    def __init__(self,search):
+        self.div_main = None
         self.browser = Chromium().latest_tab
+        self.open_browser(search)
+        self.filtration()
+        self.turn_page()
+        self.downloader_item()
 
     def open_browser(self,search=''):
         url = f'https://www.douyin.com/root/search/{search}?type=video'
@@ -39,9 +48,21 @@ class Spider(object):
     def downloader_item(self):
         item = etree.HTML(self.browser.html)
         element_div = item.xpath("//div[@id='root']")[0]
-        div_main = etree.tostring(element_div,encoding='utf-8',pretty_print=True).decode('utf-8')
-        Origin(origin=self.browser.html,page=div_main,record=0)
+        self.div_main = etree.tostring(element_div,encoding='utf-8',pretty_print=True).decode('utf-8')
 
+
+
+
+
+
+
+
+if __name__ == "__main__":
+
+
+    @scheduler('day','00:00:00')
+    def 抖音评论():
+        Spider().start()
 
 
 
