@@ -30,8 +30,9 @@ class TikTok(object):
         self.browser.listen.start(xhr)
 
     def listen_wait(self):
-        res = self.browser.listen.wait()
-        print(res.response.body)
+        res = self.browser.listen.wait(count=1)
+        if res:
+            return res.response.body
         return
 
     def set_search_where(self, selector, where: {str: str}):
@@ -58,18 +59,36 @@ class TikTok(object):
 
         ...
 
+class Transformart():
+    def __init__(self):
+        ...
+
+
 
 if __name__ == '__main__':
     cls = TikTok()
-    #
-    # cls.search('乐陵影视城')
-    ll = {
-        '0': '1',
-        '1': '1',
-        '2': '0',
-        '3': '0',
-    }
-    time.sleep(.9)
+    cls.search('乐陵影视城')
     cls.listen_start('/aweme/v1/web/search/item/')
-    cls.set_search_where('视频', ll)
-    cls.listen_wait()
+
+
+    def tiktok_start():
+        ...
+        ll = {
+            '0': '1',
+            '1': '1',
+            '2': '0',
+            '3': '0',
+        }
+        time.sleep(.9)
+        cls.set_search_where('视频', ll)
+        data = cls.listen_wait()
+        if data:
+            return data
+        else:
+            return tiktok_start()
+
+
+    data = tiktok_start()
+    print(data)
+
+
