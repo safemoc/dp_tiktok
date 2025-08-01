@@ -15,6 +15,8 @@
 from scheduler import scheduler
 from visualization.app import App
 from modules.models.task import Task
+from automation.harvester import TikTok,Transformation
+
 
 
 @scheduler('day','11:33:00')
@@ -25,16 +27,17 @@ def hahahahha ():
 
 
 if __name__ == '__main__':
-
-
-
-
-
-    # s = Spider()
-    # s.open_browser('%E4%B9%90%E9%99%B5%E5%BD%B1%E8%A7%86%E5%9F%8E')
-    # s.filtration()
-    # s.turn_page()
-    # s.downloader_item()
     Task().all()
+    cls = TikTok({
+        '0': '1',
+        '1': '1',
+        '2': '0',
+        '3': '0',
+    })
+    cls.search('乐陵影视城')
+    cls.listen_start('/aweme/v1/web/search/item/')
+    cls.tiktok_start()
+    trans = Transformation(cls.tiktok_start())
+    trans.save_data()
     App().start()
     ...

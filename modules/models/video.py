@@ -20,12 +20,13 @@ from modules.mixins import TimestampMixin, CRUDMixin
 class Video(Base, TimestampMixin, CRUDMixin):
     __tablename__ = 'video'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    video_id = Column(Text,comment='平台视频唯一id')
-    user_id = Column(Integer,comment= '用户id')
-    link = Column(Text,comment='视频链接')
-    like_count = Column(Integer,comment= '点赞数')
-    download_count= Column(Integer,comment = '下载数')
-    share_count = Column(Integer,comment = '转发数')
-    collect_count = Column(Integer,comment='收藏数')
-    comment_count = Column(Integer,comment='评论数')
-
+    video_id = Column(Text, comment='平台视频id', unique=True)
+    user_id = Column(Integer, comment='用户id')
+    link = Column(Text, comment='视频链接')
+    like_count = Column(Integer, comment='点赞数')
+    download_count = Column(Integer, comment='下载数')
+    share_count = Column(Integer, comment='转发数')
+    collect_count = Column(Integer, comment='收藏数')
+    comment_count = Column(Integer, comment='评论数')
+    post_time = Column(Integer, comment="发布时间")
+    docs = Column(Text,comment="文案")
