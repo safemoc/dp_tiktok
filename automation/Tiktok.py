@@ -1,4 +1,3 @@
-import sys
 import time
 
 from DrissionPage import Chromium
@@ -7,7 +6,7 @@ from modules.models.video import Video
 from modules.models.user import User
 
 
-class TikTok(object):
+class Harvester(object):
 
     def __init__(self, _filter):
         self.filter = _filter
@@ -61,10 +60,6 @@ class TikTok(object):
             _ = self.browser.ele(f'css:span[data-index1="{k}"][data-index2="{v}"]')
             if _:
                 _.click()
-            else:
-                ...
-
-        ...
 
     def tiktok_start(self):
         time.sleep(.9)
@@ -85,11 +80,11 @@ class Transformation(object):
         for i in self.data:
             i = i['aweme_info']
             video_id = i['aweme_id']
-            if not Video.filter(Video.video_id==video_id).first():
+            if not Video.filter(Video.video_id == video_id).first():
                 video = {"video_id": video_id,
                          "user_id": i["author"]["uid"],
                          "post_time": i["create_time"],
-                         "docs":i["desc"],
+                         "docs": i["desc"],
                          "link": f"https://www.douyin.com/video/{video_id}",
                          "like_count": i["statistics"]["digg_count"],
                          "collect_count": i["statistics"]["collect_count"],
@@ -98,7 +93,7 @@ class Transformation(object):
                          "download_count": i["statistics"]["download_count"]}
                 Video(**video).save()
             user_id = i['author']['uid']
-            if not  User.filter(User.user_id==user_id).first():
+            if not User.filter(User.user_id == user_id).first():
                 user = {'user_id': user_id,
                         "name": i['author']['nickname'],
                         'followers': i['author']['follower_count'],
@@ -107,19 +102,8 @@ class Transformation(object):
                         }
                 User(**user).save()
 
-
             ...
 
 
 if __name__ == '__main__':
-    cls = TikTok({
-        '0': '1',
-        '1': '1',
-        '2': '0',
-        '3': '0',
-    })
-    cls.search('乐陵影视城')
-    cls.listen_start('/aweme/v1/web/search/item/')
-    cls.tiktok_start()
-    trans = Transformation(cls.tiktok_start())
-    trans.save_data()
+    ...
