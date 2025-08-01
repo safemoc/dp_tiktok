@@ -19,7 +19,7 @@ from modules.mixins import TimestampMixin, CRUDMixin
 
 class User(Base, TimestampMixin, CRUDMixin):
     __tablename__ = 'user'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     account = Column(String(255), comment='账号')
     # tiktok_user_id = Column(Text)
     # account = Column(Text)

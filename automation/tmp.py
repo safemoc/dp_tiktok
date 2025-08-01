@@ -3,10 +3,14 @@ import time
 
 from DrissionPage import Chromium
 
+from modules.models.video import Video
+from modules.models.user import User
+
 
 class TikTok(object):
 
-    def __init__(self):
+    def __init__(self, _filter):
+        self.filter = _filter
         self.browser = Chromium().latest_tab
 
     def search(self, search_text: str):
@@ -19,6 +23,9 @@ class TikTok(object):
         time.sleep(.9)
         button = self.browser.ele('css:input[data-e2e="searchbar-input"][type="text"]')
         button.input(search_text)
+        login_iframe = self.browser.ele('css:rect[width="36"][height="36"][fill="url(#pattern0_3645_22461)"]')
+        if login_iframe:
+            login_iframe.click()
         self.browser.ele('css:button[data-e2e="searchbar-button"][type="button"]').click()
 
     def listen_start(self, xhr: str):
@@ -59,36 +66,47 @@ class TikTok(object):
 
         ...
 
-class Transformart():
-    def __init__(self):
-        ...
-
-
-
-if __name__ == '__main__':
-    cls = TikTok()
-    cls.search('乐陵影视城')
-    cls.listen_start('/aweme/v1/web/search/item/')
-
-
-    def tiktok_start():
-        ...
-        ll = {
-            '0': '1',
-            '1': '1',
-            '2': '0',
-            '3': '0',
-        }
+    def tiktok_start(self):
         time.sleep(.9)
-        cls.set_search_where('视频', ll)
-        data = cls.listen_wait()
+        self.set_search_where('视频', self.filter)
+        data = self.listen_wait()
         if data:
             return data
         else:
-            return tiktok_start()
+            return self.tiktok_start()
 
 
-    data = tiktok_start()
-    print(data)
+class Transformation(object):
+    def __init__(self, data):
+        self.data = data['data']
+        ...
+
+    def save_data(self):
+        for i in self.data:
+            video_id = i['aweme_info']['aweme_id']
+            video = {"video_id": video_id,
+                     "user_id": i['aweme_info']["author"]["uid"],
+                     "link": f"https://www.douyin.com/video/{video_id}",
+                     "like_count": i['aweme_info']["statistics"]["digg_count"],
+                     "collect_count": i['aweme_info']["statistics"]["collect_count"],
+                     "share_count": i['aweme_info']["statistics"]["share_count"],
+                     "comment_count": i['aweme_info']["statistics"]["comment_count"],
+                     "download_count": i['aweme_info']["statistics"]["download_count"]}
+
+            Video(**video).save()
+            User()
+            ...
 
 
+if __name__ == '__main__':
+    cls = TikTok({
+        '0': '1',
+        '1': '1',
+        '2': '0',
+        '3': '0',
+    })
+    cls.search('乐陵影视城')
+    cls.listen_start('/aweme/v1/web/search/item/')
+    cls.tiktok_start()
+    trans = Transformation(cls.tiktok_start())
+    trans.save_data()

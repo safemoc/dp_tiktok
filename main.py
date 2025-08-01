@@ -14,6 +14,8 @@
 """
 from scheduler import scheduler
 from visualization.app import App
+from modules.models.task import Task
+
 
 @scheduler('day','11:33:00')
 def hahahahha ():
@@ -33,6 +35,6 @@ if __name__ == '__main__':
     # s.filtration()
     # s.turn_page()
     # s.downloader_item()
-    hahahahha()
+    Task().all()
     App().start()
     ...
