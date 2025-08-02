@@ -41,14 +41,13 @@ class Harvester(object):
         """
         self.browser.listen.start(xhr)
 
-    def listen_wait(self, count: int = 1):
+    def listen_wait(self):
         """
 
         :return:
         """
-        res = self.browser.listen.wait(count=count)
+        res = self.browser.listen.wait()
         if res:
-            self.browser.listen.stop()
             return res.response.body
         return None
 
@@ -71,11 +70,11 @@ class Harvester(object):
                 _.click()
 
     def tiktok_video_data(self):
-
         data = self.listen_wait()
         if data:
             return data
         else:
+            print("下钻+1")
             return self.tiktok_video_data()
 
     def recycle(self):

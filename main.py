@@ -17,14 +17,23 @@ from visualization.app import App
 from automation.Tiktok import Harvester, Transformation
 
 
-@scheduler('day', '23:58:59')
+# @scheduler('day', '11:55:59')
 def tiktok(search_content, search_type, search_filter, listen_item='/aweme/v1/web/search/item/'):
+
     cls = Harvester(search_type, search_filter)
+    print(f"========>搜索<========")
     cls.search(search_content)
+    print(f"========>开始监听<========")
     cls.listen_start(listen_item)
+    print(f"========>修改筛选<========")
     cls.set_search_where(search_filter)
-    trans = Transformation(cls.tiktok_video_data())
+    print(f"========>获取数据<========")
+    data = cls.tiktok_video_data()
+    print(f"========>矫正数据<========")
+    trans = Transformation(data)
+    print(f"========>保存数据<========")
     trans.save_data()
+    print(f"========>获取评论<========")
     cls.recycle()
 
 
