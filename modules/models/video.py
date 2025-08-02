@@ -30,5 +30,5 @@ class Video(Base, TimestampMixin, CRUDMixin):
     comment_count = Column(Integer, comment='评论数')
     post_time = Column(Integer, comment="发布时间")
     docs = Column(Text, comment="文案")
-    comment_consumption = Column(Integer, comment='是否已收集评论')
+    comment_consumption = Column(Integer, comment='是否已收集评论', nullable=False, default=0)
     __table_args__ = (CheckConstraint('comment_consumption IN (0, 1)', name='check_comment_consumption_0_or_1'),)

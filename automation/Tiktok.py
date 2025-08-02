@@ -79,7 +79,9 @@ class Harvester(object):
             return self.tiktok_video_data()
 
     def recycle(self):
-        for video in Video.filter(Video.comment_consumption == 0).all():
+        videos = Video.filter(Video.comment_consumption == 0).all()
+
+        for video in videos:
             self.listen_start('/aweme/v1/web/comment/list/?device_platform=webapp')
             self.browser.get(video.link)
             for packet in self.browser.listen.steps():
@@ -156,11 +158,4 @@ class Transformation(object):
 
 
 if __name__ == '__main__':
-    tk = Harvester('乐陵影视城', "视频", {
-        '0': '1',
-        '1': '1',
-        '2': '0',
-        '3': '0',
-    })
-
     ...
