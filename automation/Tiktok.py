@@ -79,12 +79,17 @@ class Harvester(object):
             return self.tiktok_video_data()
 
     def recycle(self):
-        videos = Video.filter(Video.comment_consumption == 0).all()
+        videos = Video().filter(Video.comment_consumption == 0).all()
+        print(videos)
 
         for video in videos:
             self.listen_start('/aweme/v1/web/comment/list/?device_platform=webapp')
             self.browser.get(video.link)
+            login_iframe = self.browser.ele('css:rect[width="36"][height="36"][fill="url(#pattern0_3645_22461)"]')
+            if login_iframe:
+                login_iframe.click()
             for packet in self.browser.listen.steps():
+
                 for i in packet.response.body["comments"]:
                     exists = User.filter(User.user_id == i["user"]["uid"]).first()
                     if not exists:
@@ -112,13 +117,15 @@ class Harvester(object):
                             "timestamp": i["create_time"]
                         }
                         Comment(**item).save()
+                print(packet.response.body)
+                if packet.response.body["has_more"] == 0:
+                    break
+                else:
+                    self.browser.actions.move_to((300,300),offset_x=0,offset_y=0)
+                    self.browser.actions.scroll(delta_y=600)
             video.comment_consumption = 1
+            print(video.link)
             video.save()
-
-        """
-        是否可以 使用 dirssionpage 同时开启5个网页 分别 下拉 获取 评论信息
-        :return:
-        """
         ...
 
 
@@ -158,4 +165,12 @@ class Transformation(object):
 
 
 if __name__ == '__main__':
+    cls = Harvester("综合", {
+        '0': '1',
+        '1': '1',
+        '2': '0',
+        '3': '0',
+    })
+    cls.recycle()
+
     ...
