@@ -88,44 +88,50 @@ class Harvester(object):
             login_iframe = self.browser.ele('css:rect[width="36"][height="36"][fill="url(#pattern0_3645_22461)"]')
             if login_iframe:
                 login_iframe.click()
-            for packet in self.browser.listen.steps():
 
-                for i in packet.response.body["comments"]:
-                    exists = User.filter(User.user_id == i["user"]["uid"]).first()
-                    if not exists:
-                        user = i["user"]
-                        user_info = {
-                            "user_id": user["uid"],
-                            "account": user["unique_id"],
-                            "sec_uid": user["sec_uid"],
-                            "self_url": f"https://www.douyin.com/user/{user["sec_uid"]}",
-                            "followers": "",
-                            "following": "",
-                            "name": user["nickname"],
-                            "avatar": user["avatar_thumb"]["url_list"][0],
-                        }
-                        User(**user_info).save()
-                    exists = Comment.filter(Comment.cid == i['cid']).first()
-                    if not exists:
-                        item = {
-                            "cid": i['cid'],
-                            "video_id": i["aweme_id"],
-                            "content": i["text"],
-                            "user_id": i["user"]["uid"],
-                            "liked": i["digg_count"],
-                            "fid": None,
-                            "timestamp": i["create_time"]
-                        }
-                        Comment(**item).save()
-                print(packet.response.body)
-                if packet.response.body["has_more"] == 0:
+            for packet in self.browser.listen.steps():
+                try:
+                    for i in packet.response.body["comments"]:
+                        exists = User.filter(User.user_id == i["user"]["uid"]).first()
+                        if not exists:
+                            user = i["user"]
+                            user_info = {
+                                "user_id": user["uid"],
+                                "account": user["unique_id"],
+                                "sec_uid": user["sec_uid"],
+                                "self_url": f"https://www.douyin.com/user/{user["sec_uid"]}",
+                                "followers": "",
+                                "following": "",
+                                "name": user["nickname"],
+                                "avatar": user["avatar_thumb"]["url_list"][0],
+                            }
+                            User(**user_info).save()
+                        exists = Comment.filter(Comment.cid == i['cid']).first()
+                        if not exists:
+                            item = {
+                                "cid": i['cid'],
+                                "video_id": i["aweme_id"],
+                                "content": i["text"],
+                                "user_id": i["user"]["uid"],
+                                "liked": i["digg_count"],
+                                "fid": None,
+                                "timestamp": i["create_time"]
+                            }
+                            Comment(**item).save()
+                    print(packet.response.body)
+                    if packet.response.body["has_more"] == 0:
+                        break
+                    else:
+                        self.browser.actions.move_to((300, 300), offset_x=0, offset_y=0)
+                        self.browser.actions.scroll(delta_y=600)
+                except Exception as e:
+                    print(e)
+                    print(packet.response.body)
                     break
-                else:
-                    self.browser.actions.move_to((300,300),offset_x=0,offset_y=0)
-                    self.browser.actions.scroll(delta_y=600)
-            video.comment_consumption = 1
-            print(video.link)
-            video.save()
+                video.comment_consumption = 1
+                print(video.link)
+                video.save()
+
         ...
 
 
