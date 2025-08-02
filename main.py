@@ -17,19 +17,19 @@ from visualization.app import App
 from automation.Tiktok import Harvester, Transformation
 
 
-# @scheduler('day', '16:46:00')
+@scheduler('day', '23:58:59')
 def tiktok(search_content, search_type, search_filter, listen_item='/aweme/v1/web/search/item/'):
     cls = Harvester(search_type, search_filter)
     cls.search(search_content)
-    cls.set_search_where(search_filter)
     cls.listen_start(listen_item)
+    cls.set_search_where(search_filter)
     trans = Transformation(cls.tiktok_video_data())
     trans.save_data()
     cls.recycle()
 
 
 if __name__ == '__main__':
-    tiktok('乐陵影视城', "视频", {
+    tiktok('乐陵影视城', "综合", {
         '0': '1',
         '1': '1',
         '2': '0',
