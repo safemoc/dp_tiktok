@@ -45,56 +45,21 @@ def scheduler(cycle, exec_time):
     def decorator(func):
         def wrapper(*args, **kwargs):
             def task_loop():
-                i = 0
-                implement = True
-
-                now = datetime.datetime.now()
                 h, m, s = map(int, exec_time.split(":"))
-                next_time = __cycle[cycle](now).replace(hour=h, minute=m, second=s, microsecond=0)
-
-                def __init():
-                    task = Task().filter(Task.role_name == func.__name__).order_by(Task.created_at.desc()).first()
-                    if task:
-                        if task.over:
-                            if task.created_at < next_time:
-                                return False
-                            else:
-                                return True
-                        else:
-                            return False
-                    else:
-                        return False
-
+                next_time = datetime.datetime.now().replace(hour=h, minute=m, second=s, microsecond=0)
                 while True:
                     now = datetime.datetime.now()
-                    if i == 0:
-                        implement = __init()
-
+                    if next_time<now:
+                        next_time = __cycle[cycle](next_time)
+                        next_time = next_time.replace(hour=h, minute=m, second=s, microsecond=0)
                     sleep_seconds = (next_time - now).total_seconds()
-                    if sleep_seconds > 0:
+                    if sleep_seconds >= 2:
                         print(f"等待 {sleep_seconds:.2f} 秒，直到 {next_time} 执行任务")
                         time.sleep(sleep_seconds)
-
-                    if implement:
-                        _ = Task.create(role_name=func.__name__, over=0)
-                        func(*args, **kwargs)
-                        _.over = 1
-                        _.save()
-                    else:
-                        _ = Task.create(role_name=func.__name__, over=0)
-                        func(*args, **kwargs)
-                        _.over = 1
-                        _.save()
-                        implement = True
-
-                    # 关键：更新下一个周期时间
-                    next_time = __cycle[cycle](next_time)
-                    next_time = next_time.replace(hour=h, minute=m, second=s, microsecond=0)
-
-                    i += 1
-
+                    _ = Task.create(role_name=func.__name__, over=0)
+                    func(*args, **kwargs)
+                    _.over = 1
+                    _.save()
             threading.Thread(target=task_loop, daemon=True).start()
-
         return wrapper
-
     return decorator

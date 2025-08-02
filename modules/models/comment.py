@@ -20,6 +20,7 @@ from modules.mixins import TimestampMixin, CRUDMixin
 class Comment(Base, TimestampMixin, CRUDMixin):
     __tablename__ = 'comments'
     id = Column(Integer, primary_key=True, autoincrement=True)
+    cid = Column(Text,unique=True)
     video_id = Column(Integer)
     content = Column(Text)
     user_id = Column(Integer)

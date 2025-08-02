@@ -14,22 +14,22 @@
 """
 from scheduler import scheduler
 from visualization.app import App
-from modules.models.task import Task
 from automation.Tiktok import Harvester, Transformation
 
 
-@scheduler('day', '23:50:00')
-def tiktok(search_content, search_filter, listen_item='/aweme/v1/web/search/item/'):
-    cls = Harvester(search_filter)
+# @scheduler('day', '16:46:00')
+def tiktok(search_content, search_type, search_filter, listen_item='/aweme/v1/web/search/item/'):
+    cls = Harvester(search_type, search_filter)
     cls.search(search_content)
+    cls.set_search_where(search_filter)
     cls.listen_start(listen_item)
-    cls.tiktok_start()
-    trans = Transformation(cls.tiktok_start())
+    trans = Transformation(cls.tiktok_video_data())
     trans.save_data()
+    cls.recycle()
 
 
 if __name__ == '__main__':
-    tiktok('乐陵影视城', {
+    tiktok('乐陵影视城', "视频", {
         '0': '1',
         '1': '1',
         '2': '0',

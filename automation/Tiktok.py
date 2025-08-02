@@ -4,12 +4,18 @@ from DrissionPage import Chromium
 
 from modules.models.video import Video
 from modules.models.user import User
+from modules.models.comment import Comment
 
 
 class Harvester(object):
 
-    def __init__(self, _filter):
-        self.filter = _filter
+    def __init__(self, selector, _filter):
+        """
+
+        :param selector:
+        :param _filter:
+        """
+        self.selector = selector
         self.browser = Chromium().latest_tab
 
     def search(self, search_text: str):
@@ -35,40 +41,83 @@ class Harvester(object):
         """
         self.browser.listen.start(xhr)
 
-    def listen_wait(self):
-        res = self.browser.listen.wait(count=1)
+    def listen_wait(self, count: int = 1):
+        """
+
+        :return:
+        """
+        res = self.browser.listen.wait(count=count)
         if res:
+            self.browser.listen.stop()
             return res.response.body
         return None
 
-    def set_search_where(self, selector, where: {str: str}):
+    def set_search_where(self, _filter):
         """
          修改搜索条件
-        :param selector: 【综合、视频、用户、直播】
-        :param where: 筛选条件
         :return:
         """
         time.sleep(.9)
         items = {i.text: i for i in self.browser.eles('css:span[data-key]')}
-        if selector not in items.keys():
+        if self.selector not in items.keys():
             print(f"选项必须在 {items.keys()} ")
             raise TypeError
-        items[selector].click()
+        items[self.selector].click()
 
         self.browser.ele('css:svg.arrow').hover()
-        for k, v in where.items():
+        for k, v in _filter.items():
             _ = self.browser.ele(f'css:span[data-index1="{k}"][data-index2="{v}"]')
             if _:
                 _.click()
 
-    def tiktok_start(self):
-        time.sleep(.9)
-        self.set_search_where('视频', self.filter)
+    def tiktok_video_data(self):
+
         data = self.listen_wait()
         if data:
             return data
         else:
-            return self.tiktok_start()
+            return self.tiktok_video_data()
+
+    def recycle(self):
+        for video in Video.filter(Video.comment_consumption == 0).all():
+            self.listen_start('/aweme/v1/web/comment/list/?device_platform=webapp')
+            self.browser.get(video.link)
+            for packet in self.browser.listen.steps():
+                for i in packet.response.body["comments"]:
+                    exists = User.filter(User.user_id == i["user"]["uid"]).first()
+                    if not exists:
+                        user = i["user"]
+                        user_info = {
+                            "user_id": user["uid"],
+                            "account": user["unique_id"],
+                            "sec_uid": user["sec_uid"],
+                            "self_url": f"https://www.douyin.com/user/{user["sec_uid"]}",
+                            "followers": "",
+                            "following": "",
+                            "name": user["nickname"],
+                            "avatar": user["avatar_thumb"]["url_list"][0],
+                        }
+                        User(**user_info).save()
+                    exists = Comment.filter(Comment.cid == i['cid']).first()
+                    if not exists:
+                        item = {
+                            "cid": i['cid'],
+                            "video_id": i["aweme_id"],
+                            "content": i["text"],
+                            "user_id": i["user"]["uid"],
+                            "liked": i["digg_count"],
+                            "fid": None,
+                            "timestamp": i["create_time"]
+                        }
+                        Comment(**item).save()
+            video.comment_consumption = 1
+            video.save()
+
+        """
+        是否可以 使用 dirssionpage 同时开启5个网页 分别 下拉 获取 评论信息
+        :return:
+        """
+        ...
 
 
 class Transformation(object):
@@ -98,6 +147,7 @@ class Transformation(object):
                         "name": i['author']['nickname'],
                         'followers': i['author']['follower_count'],
                         'avatar': i['author']['avatar_thumb']['url_list'][0],
+                        'sec_uid': i['author']['sec_uid'],
                         'self_url': f"https://www.douyin.com/user/{i['author']['sec_uid']}"
                         }
                 User(**user).save()
@@ -106,4 +156,11 @@ class Transformation(object):
 
 
 if __name__ == '__main__':
+    tk = Harvester('乐陵影视城', "视频", {
+        '0': '1',
+        '1': '1',
+        '2': '0',
+        '3': '0',
+    })
+
     ...
