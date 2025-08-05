@@ -13,11 +13,11 @@
 @Statement: 本脚本仅供学习与研究使用，严禁用于商业用途（For educational and non-commercial use only）。
 """
 from scheduler import scheduler
-from visualization.app import App
+from visualization.app import *
 from automation.Tiktok import Harvester, Transformation
 
 
-# @scheduler('day', '11:55:59')
+@scheduler('day', '11:55:59')
 def tiktok(search_content, search_type, search_filter, listen_item='/aweme/v1/web/search/item/'):
 
     cls = Harvester(search_type, search_filter)
@@ -44,5 +44,5 @@ if __name__ == '__main__':
         '2': '0',
         '3': '0',
     })
-    App().start()
+
     ...

@@ -1,19 +1,52 @@
-from customtkinter import *
+import sys
 
-class App(object):
+from PyQt6.QtWidgets import QApplication, QWidget, QToolTip, QPushButton
+from PyQt6.QtGui import QFont
+
+
+class Example(QWidget):
     def __init__(self):
-        self.window = CTk()
-        self.__create_window()
-        self.button_clicked()
+        super().__init__()
+        self.initUI()
 
-    def __create_window(self):
-        self.window.title('my app')
-        self.window.geometry('800x600')
+
+    def initUI(self):
+        QToolTip.setFont(QFont('SansSerif', 10))
+
+        self.setToolTip('This is a <b>QWidget</b> widget')
+
+        btu = QPushButton("button", self)
+        # noinspection PyUnresolvedReferences
+        btu.clicked.connect(QApplication.instance().quit)
+        btu.setToolTip("This is a <b>QPushButton</b> widget QUIT")
+        btu.resize(btu.sizeHint())
+        btu.move(50,50)
+
+        self.setGeometry(300,300,300,200)
+        self.setWindowTitle("Tooltips")
+        self.show()
+
         ...
 
-    def button_clicked(self):
-        CTkButton(master=self.window, text='click', corner_radius=32, width=50, height=30).place(relx=.5, rely=.7,
-                                                                                                 anchor='center')
 
-    def start(self):
-        self.window.mainloop()
+def main():
+
+    app = QApplication(sys.argv)
+    ex = Example()
+    sys.exit(app.exec())
+    # app = QApplication(sys.argv)
+    #
+    # windows = QWidget()
+    #
+    # windows.resize(600, 600)
+    # windows.move(100, 30)
+    #
+    # windows.setWindowTitle("Simple")
+    #
+    # windows.show()
+    #
+    # sys.exit(app.exec())
+
+
+if __name__ == '__main__':
+    main()
